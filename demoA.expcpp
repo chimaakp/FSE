@@ -1,0 +1,105 @@
+#pragma region VEXcode Generated Robot Configuration
+// Make sure all required headers are included.
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+#include <string.h>
+
+
+#include "vex.h"
+
+using namespace vex;
+
+// Brain should be defined by default
+brain Brain;
+
+
+// START EXP MACROS
+#define waitUntil(condition)                                                   \
+  do {                                                                         \
+    wait(5, msec);                                                             \
+  } while (!(condition))
+
+#define repeat(iterations)                                                     \
+  for (int iterator = 0; iterator < iterations; iterator++)
+// END EXP MACROS
+
+
+// Robot configuration code.
+inertial BrainInertial = inertial();
+motor LeftDriveSmart = motor(PORT6, false);
+motor RightDriveSmart = motor(PORT10, true);
+smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, BrainInertial, 259.34, 320, 40, mm, 1);
+
+optical Optical1 = optical(PORT1);
+
+void calibrateDrivetrain() {
+  wait(200, msec);
+  Brain.Screen.print("Calibrating");
+  Brain.Screen.newLine();
+  Brain.Screen.print("Inertial");
+  BrainInertial.calibrate();
+  while (BrainInertial.isCalibrating()) {
+    wait(25, msec);
+  }
+
+  // Clears the screen and returns the cursor to row 1, column 1.
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
+}
+
+#pragma endregion VEXcode Generated Robot Configuration
+
+//----------------------------------------------------------------------------
+//
+//    Project:          Drivetrain Moves and Turns
+//    Description:      This example uses the drivetrain to drive
+//                      and turn in different directions
+//    Configuration:    EXP BaseBot (Drivetrain 2-motor, Inertial)
+//  
+//----------------------------------------------------------------------------
+
+// Include the VEX Library
+#include "vex.h"
+
+// Allows for easier use of the VEX Library
+using namespace vex;
+
+int main() {
+  //Calibrates the Drivetrain Inertial
+  calibrateDrivetrain();
+while(1)
+{
+if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonRight.pressing()))
+{
+  break;
+}
+}
+  // Begin project code
+  // Driving Forward and Turning Right
+  Drivetrain.setDriveVelocity(100, percent);
+
+  // Driving Forward and Turning Left
+  Drivetrain.driveFor(forward, 1000, mm);
+  Drivetrain.setDriveVelocity(20, percent);
+  Drivetrain.turnFor(left, 180, degrees);
+  Drivetrain.setDriveVelocity(100, percent);
+  Drivetrain.drive(forward);
+  while(1){
+    if(Optical1.isNearObject())
+    {
+      Drivetrain.stop();
+    }
+  }
+
+
+  return 0;
+}
+/*
+Manually Press "Go". The rest of the steps shall be executed autonomously by your robot.
+Move forward in a straight line for 1 meters (or 3.28084 feet).
+Perform a 180-degree turn.
+Continue moving forward in a straight line.
+Stop when your robot encounters a wall
+*/
