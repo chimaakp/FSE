@@ -90,6 +90,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
     if(Optical1.isNearObject())
     {
       Drivetrain.stop();
+      break;
     }
   }
 
