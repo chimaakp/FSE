@@ -28,11 +28,11 @@ brain Brain;
 
 // Robot configuration code.
 inertial BrainInertial = inertial();
-motor LeftDriveSmart = motor(PORT6, false);
-motor RightDriveSmart = motor(PORT10, true);
+motor LeftDriveSmart = motor(PORT1, false);
+motor RightDriveSmart = motor(PORT6, true);
 smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, BrainInertial, 259.34, 320, 40, mm, 1);
 
-optical Optical1 = optical(PORT1);
+optical Optical1 = optical(PORT7);
 
 void calibrateDrivetrain() {
   wait(200, msec);
