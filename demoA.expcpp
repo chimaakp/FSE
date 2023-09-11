@@ -79,6 +79,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
   // Begin project code
   // Driving Forward and Turning Right
   Drivetrain.setDriveVelocity(100, percent);
+  Drivetrain.setTurnVelocity(100, percent);
 
   // Driving Forward and Turning Left
   Drivetrain.driveFor(forward, 1000, mm);
