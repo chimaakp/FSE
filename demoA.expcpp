@@ -84,8 +84,8 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
   Drivetrain.driveFor(forward, 1000, mm);
   Drivetrain.turnFor(left, 180, degrees);
   Drivetrain.setDriveVelocity(100, percent);
-  Drivetrain.driveFor(forward, 900, mm);
-  Drivetrain.setDriveVelocity(20, percent);
+  Drivetrain.driveFor(forward, 1000, mm);
+  Drivetrain.setDriveVelocity(90, percent);
   Drivetrain.drive(forward);
   while(1){
     if(Optical1.isNearObject())
