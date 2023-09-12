@@ -1,0 +1,161 @@
+#pragma region VEXcode Generated Robot Configuration
+// Make sure all required headers are included.
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+#include <string.h>
+
+
+#include "vex.h"
+
+using namespace vex;
+
+// Brain should be defined by default
+brain Brain;
+
+
+// START EXP MACROS
+#define waitUntil(condition)                                                   \
+  do {                                                                         \
+    wait(5, msec);                                                             \
+  } while (!(condition))
+
+#define repeat(iterations)                                                     \
+  for (int iterator = 0; iterator < iterations; iterator++)
+// END EXP MACROS
+
+
+// Robot configuration code.
+inertial BrainInertial = inertial();
+motor LeftDriveSmart = motor(PORT6, false);
+motor RightDriveSmart = motor(PORT10, true);
+smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, BrainInertial, 259.34, 320, 40, mm, 1);
+
+optical Optical1 = optical(PORT1);
+optical Optical2 = optical(PORT2);
+optical Optical3 = optical(PORT3);
+
+void calibrateDrivetrain() {
+  wait(200, msec);
+  Brain.Screen.print("Calibrating");
+  Brain.Screen.newLine();
+  Brain.Screen.print("Inertial");
+  BrainInertial.calibrate();
+  while (BrainInertial.isCalibrating()) {
+    wait(25, msec);
+  }
+
+  // Clears the screen and returns the cursor to row 1, column 1.
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
+}
+
+#pragma endregion VEXcode Generated Robot Configuration
+
+//----------------------------------------------------------------------------
+//
+//    Project:          Drivetrain Moves and Turns
+//    Description:      This example uses the drivetrain to drive
+//                      and turn in different directions
+//    Configuration:    EXP BaseBot (Drivetrain 2-motor, Inertial)
+//  
+//----------------------------------------------------------------------------
+
+// Include the VEX Library
+#include "vex.h"
+#define frontmask 0x4
+#define leftmask 0x2
+#define rightmask 0x1
+
+
+// Allows for easier use of the VEX Library
+using namespace vex;
+
+void setbitCallback(void * arg) {
+  char i = *(char *)arg;
+
+  i = 0x0;
+
+
+  if (Optical1.isNearObject()) {
+
+    i = i || frontmask;
+    
+  }
+
+    if (Optical2.isNearObject()) {
+      i = i || leftmask;
+    
+  }
+
+    if (Optical3.isNearObject()) {
+
+      i = i || rightmask;
+    
+  }
+
+  
+}
+
+int main() {
+  //Calibrates the Drivetrain Inertial
+  calibrateDrivetrain();
+  char wallbit = 0x0;
+  int endcondition =1;
+ // thread myThread = thread(myThreadCallback);
+
+  
+  thread myThread = thread(setbitCallback, &wallbit);
+
+while(1)
+{
+if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonRight.pressing()))
+{
+  break;
+}
+}
+  // Begin project code
+  // Driving Forward and Turning Right
+  Drivetrain.setDriveVelocity(100, percent);
+  Drivetrain.setTurnVelocity(100, percent);
+  Drivetrain.drive(forward);
+
+  
+  while(endcondition){
+    switch (wallbit) {
+  case 0x6: //left
+    Drivetrain.turnFor(left, 90, degrees);
+    Drivetrain.drive(forward);
+    break;
+  case 0x5: //right
+    Drivetrain.turnFor(right, 90, degrees);
+    Drivetrain.drive(forward);
+    break;
+  case 0x7: //dead end
+    Drivetrain.stop();
+    endcondition =0;
+    break;  
+  default:
+    // do nothing none of the cases match
+    break;
+  }
+
+
+
+  }
+
+
+  return 0;
+}
+/*
+Position your robot at the entrance of the maze and manually press "Go". The rest of the steps shall be executed autonomously by your robot. 
+Note: The entrance of the maze will have walls on three sides. 
+Move forward following the walls. 
+Note: Walls may be discontinuous and may only be on one side of the Robot. 
+If your robot encounters a corner perform a 90-degree turn in the direction toward the open path (no backtracking).
+Note: a corner is defined with two adjacently placed perpendicular walls with one wall facing the Robot. There may be more than one corner in a maze.
+Continue to move forward following the walls.
+Stop when your robot reaches a dead end.
+Note: a dead end is defined with walls on three sides of the Robot.
+*/
