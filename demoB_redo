@@ -63,9 +63,6 @@ void calibrateDrivetrain() {
 
 // Include the VEX Library
 #include "vex.h"
-#define frontmask 0x4
-#define leftmask 0x2
-#define rightmask 0x1
 
 
 // Allows for easier use of the VEX Library
@@ -75,7 +72,7 @@ using namespace vex;
 int main() {
   //Calibrates the Drivetrain Inertial
   calibrateDrivetrain();
-  char i = 0x0;
+
   int endcondition =1;
  // thread myThread = thread(myThreadCallback);
 
@@ -97,22 +94,20 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
   
   while(endcondition){
     if(Optical1.isNearObject()){
-      i = i || frontmask;
       Drivetrain.stop();
-      Drivetrain.driveFor(reverse, 2, inches);
-      if(152.4 < Distance2.objectDistance(mm)){//nothing detected within 6 inches in sensor direction
+      Drivetrain.driveFor(reverse, 3, inches);
+      Drivetrain.stop();
+      if( (float) 152.4 <= (float) Distance2.objectDistance(mm) ){//nothing detected within 6 inches in sensor direction
 
         Drivetrain.turnFor(right, 90, degrees);
         Drivetrain.drive(forward);
-        i =0x0;
       }
-      else{//something deteched
-          i = i || rightmask;
+      else{//something detected
+
           Drivetrain.turnFor(left, 90, degrees);
           Drivetrain.driveFor(forward, 6, inches, false);
           while(Drivetrain.isMoving()){
             if(Optical1.isNearObject()){
-              i = i || leftmask;
               Drivetrain.stop();
               endcondition =0;
               break;
@@ -122,17 +117,13 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
            
             
           }
-          if(i == 0x7){
-            break;  
-          }
-          else{//nothing was seen. clear and keep going
-          i=0x0;
+          //nothing was seen. clear and keep going
           Drivetrain.drive(forward);
-          }
-      }
+
+      }//right and left detected
       
 
-    }
+    }//naer object
 
 
 
