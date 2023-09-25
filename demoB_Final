@@ -106,7 +106,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
           Drivetrain.turnFor(left, 180, degrees);
           Drivetrain.driveFor(forward, 6, inches, false);
           while(Drivetrain.isMoving()){
-            if(1 > Distance2.objectDistance(inches)){
+            if(2.5 > Distance2.objectDistance(inches)){
               Drivetrain.stop();
               endcondition =0;
               break;
