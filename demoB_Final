@@ -70,8 +70,7 @@ using namespace vex;
 
 
 int main() {
-  //Calibrates the Drivetrain Inertial
-  calibrateDrivetrain();
+
 
   int endcondition =1;
  // thread myThread = thread(myThreadCallback);
@@ -82,6 +81,8 @@ while(1)
 {
 if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonRight.pressing()))
 {
+  //Calibrates the Drivetrain Inertial
+  calibrateDrivetrain();
   break;
 }
 }
