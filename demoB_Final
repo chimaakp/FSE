@@ -87,7 +87,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
 }
   // Begin project code
   // Driving Forward and Turning Right
-  Drivetrain.setDriveVelocity(100, percent);
+  Drivetrain.setDriveVelocity(50, percent);
   Drivetrain.setTurnVelocity(50, percent);
   Drivetrain.drive(forward);
 
@@ -108,7 +108,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
           while(Drivetrain.isMoving()){
             if(2.5 > Distance2.objectDistance(inches)){
               Drivetrain.stop();
-              endcondition =0;
+              endcondition = 0;
               break;
 
             }
