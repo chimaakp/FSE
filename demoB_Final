@@ -93,7 +93,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
 
   
   while(endcondition){
-    if(1 > Distance2.objectDistance(inches) ){
+    if(2.5 > Distance2.objectDistance(inches) ){
       Drivetrain.stop();
       Drivetrain.driveFor(reverse, 3, inches);
       Drivetrain.stop();
