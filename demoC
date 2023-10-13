@@ -1,0 +1,214 @@
+#pragma region VEXcode Generated Robot Configuration
+// Make sure all required headers are included.
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+#include <string.h>
+
+
+#include "vex.h"
+
+using namespace vex;
+
+// Brain should be defined by default
+brain Brain;
+
+
+// START EXP MACROS
+#define waitUntil(condition)                                                   \
+  do {                                                                         \
+    wait(5, msec);                                                             \
+  } while (!(condition))
+
+#define repeat(iterations)                                                     \
+  for (int iterator = 0; iterator < iterations; iterator++)
+// END EXP MACROS
+
+
+// Robot configuration code.
+inertial BrainInertial = inertial();
+motor LeftDriveSmart = motor(PORT1, false);
+motor RightDriveSmart = motor(PORT6, true);
+smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, BrainInertial, 259.34, 320, 40, mm, 1);
+
+optical Optical7 = optical(PORT7);
+distance Distance10 = distance(PORT10);
+
+void calibrateDrivetrain() {
+  wait(200, msec);
+  Brain.Screen.print("Calibrating");
+  Brain.Screen.newLine();
+  Brain.Screen.print("Inertial");
+  BrainInertial.calibrate();
+  while (BrainInertial.isCalibrating()) {
+    wait(25, msec);
+  }
+
+  // Clears the screen and returns the cursor to row 1, column 1.
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
+}
+
+#pragma endregion VEXcode Generated Robot Configuration
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*    Module:       main.cpp                                                  */
+/*    Author:       {author}                                                  */
+/*    Created:      {date}                                                    */
+/*    Description:  EXP project                                               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+// Include the VEX Library
+#include "vex.h"
+  
+// Allows for easier use of the VEX Library
+using namespace vex;
+
+enum State {Start, Position , Approach ,Pickup, Stop};
+static double flatpitch;
+
+int approachFirstBall(){
+//drive forward until on flat ground
+Drivetrain.drive(forward);
+//dont worry about any checks until no longer on flat ground
+while((BrainInertial.orientation(pitch, degrees) + flatpitch) < 5){}
+
+while(1){
+  if((BrainInertial.orientation(pitch, degrees) - flatpitch) < 5 ){// if pitch less than 5 degrees away from flat 
+    Drivetrain.stop();
+    break;
+  }
+}
+Drivetrain.driveFor(forward, 3, inches);
+//make a left turn (90 degrees)
+Drivetrain.turnToHeading(270, degrees);
+// drive until within 6 inches of wall
+Drivetrain.drive(forward);
+while(1){
+  if(Distance10.objectDistance(inches)<= 4){// this value should change based on dimension of robot; we want to be in center of square
+    Drivetrain.stop();
+    break;
+  }
+}
+//turn right 90 degrees
+Drivetrain.turnToHeading(0, degrees);
+//drive forward 12 inches
+Drivetrain.driveFor(forward, 12, inches);
+//change state to Approach
+return Approach;
+}
+
+int positiontoNextBall(int *nextballNum){
+//if this is the 4th ball, change state to stop
+int tmp = *nextballNum;
+if(tmp > 4){
+  return Stop;
+}
+//increment ball count
+tmp += 1;
+//turn right 90 degree
+Drivetrain.turnToHeading(90, degrees);
+//move forward 12 inches
+Drivetrain.driveFor(forward, 12, inches);
+//turn left 90 degrees
+Drivetrain.turnToHeading(0, degrees);
+//change to Approach
+return Approach;
+}
+
+int checkColor(){
+//get color sensor ready
+//poll optical sensor throughout
+Drivetrain.setDriveVelocity(10, percent);
+Drivetrain.drive(forward);
+while(!Optical7.isNearObject()){//holding at this line until object sensed
+}
+//if object detected, stop
+Drivetrain.stop();
+Drivetrain.setDriveVelocity(50, percent);
+
+//if object is blue, change state to pickup
+if(Optical7.color() == blue){
+return Pickup;
+}
+//if object is red, change drive back 10 in: Change state to Position
+else{
+Drivetrain.driveFor(reverse, 6, inches);
+return Position;
+}
+
+}
+
+int stopAllMovement(){
+//stop all motors
+Drivetrain.stop();
+return Stop;
+
+
+}
+
+int pickupBall(){
+//logic tbd (based on design)
+Drivetrain.turnToHeading(180, degrees);
+return Stop;
+
+}
+
+
+
+
+int main() {
+  while(1)
+{
+if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonRight.pressing()))
+{
+  break;
+}
+}
+  calibrateDrivetrain();
+  Drivetrain.setDriveVelocity(50, percent);
+  BrainInertial.calibrate();
+
+
+
+  Drivetrain.setHeading(0, degrees);
+
+  int positionTrack = Start;
+  int cont = 1;
+  flatpitch = BrainInertial.orientation(pitch, degrees);
+  int ballnum = 0;
+
+  while(cont){
+    switch (positionTrack){
+      case Start:
+      positionTrack = approachFirstBall();
+      ballnum++;
+      break;
+      case Position:
+      positionTrack = positiontoNextBall(&ballnum);
+
+      break;
+      case Approach:
+      positionTrack = checkColor();
+
+      break;
+      case Pickup:
+      positionTrack = pickupBall();
+
+      break;
+      default:
+      positionTrack = stopAllMovement();
+      cont = 0; //STOP!!!
+
+      break;
+    }
+
+
+  }
+
+
+
+
+}
