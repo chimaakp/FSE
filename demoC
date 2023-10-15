@@ -36,7 +36,7 @@ optical Optical5 = optical(PORT5);
 distance Distance1 = distance(PORT1);
 motor Claw = motor(PORT4, false);
 
-motor Arm = motor(PORT3, true);
+motor Motor3 = motor(PORT3, true);
 
 
 void calibrateDrivetrain() {
@@ -153,15 +153,14 @@ return Stop;
 
 }
 
-int pickupBall(){
-//logic tbd (based on design)
-Drivetrain.turnToHeading(180, degrees);
+int pickupBall(){//clockwise to close claw, and clockwise to lift arm
+
 Claw.setMaxTorque(50, percent);
-Claw.setTimeout(4, seconds);
-Claw.spin(forward);
-Arm.setMaxTorque(50, percent);
+Claw.setTimeout(3, seconds);
+Claw.spinFor(reverse, 180, degrees);
+Arm.setMaxTorque(100, percent);
 Arm.setTimeout(4, seconds);
-Arm.spin(forward);
+Arm.spinFor(reverse, 45, degrees);
 return Stop;
 
 }
