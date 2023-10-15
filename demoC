@@ -34,9 +34,9 @@ smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, BrainInertia
 
 optical Optical5 = optical(PORT5);
 distance Distance1 = distance(PORT1);
-motor Motor4 = motor(PORT4, false);
+motor Claw = motor(PORT4, false);
 
-motor Motor3 = motor(PORT3, true);
+motor Arm = motor(PORT3, true);
 
 
 void calibrateDrivetrain() {
@@ -156,6 +156,12 @@ return Stop;
 int pickupBall(){
 //logic tbd (based on design)
 Drivetrain.turnToHeading(180, degrees);
+Claw.setMaxTorque(50, percent);
+Claw.setTimeout(4, seconds);
+Claw.spin(forward);
+Arm.setMaxTorque(50, percent);
+Arm.setTimeout(4, seconds);
+Arm.spin(forward);
 return Stop;
 
 }
