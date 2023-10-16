@@ -36,7 +36,7 @@ optical Optical5 = optical(PORT5);
 distance Distance1 = distance(PORT1);
 motor Claw = motor(PORT4, false);
 
-motor Motor3 = motor(PORT3, true);
+motor Arm = motor(PORT3, false);
 
 
 void calibrateDrivetrain() {
