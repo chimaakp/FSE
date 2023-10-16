@@ -75,16 +75,17 @@ static double flatpitch;
 
 int approachFirstBall(){
 //drive forward until on flat ground
-Drivetrain.drive(forward);
+//Drivetrain.drive(forward);
 //dont worry about any checks until no longer on flat ground
-while((BrainInertial.orientation(pitch, degrees) + flatpitch) < 5){}
+Drivetrain.driveFor(forward, 12, inches);
+/*while((BrainInertial.orientation(pitch, degrees) + flatpitch) < 5){}
 
 while(1){
   if((BrainInertial.orientation(pitch, degrees) - flatpitch) < 5 ){// if pitch less than 5 degrees away from flat 
     Drivetrain.stop();
     break;
   }
-}
+}*/
 Drivetrain.driveFor(forward, 3, inches);
 //make a left turn (90 degrees)
 Drivetrain.turnToHeading(270, degrees);
@@ -125,13 +126,13 @@ return Approach;
 int checkColor(){
 //get color sensor ready
 //poll optical sensor throughout
-Drivetrain.setDriveVelocity(10, percent);
+Drivetrain.setDriveVelocity(5, percent);
 Drivetrain.drive(forward);
 while(!Optical5.isNearObject()){//holding at this line until object sensed
 }
 //if object detected, stop
 Drivetrain.stop();
-Drivetrain.setDriveVelocity(50, percent);
+Drivetrain.setDriveVelocity(20, percent);
 
 //if object is blue, change state to pickup
 if(Optical5.color() == blue){
@@ -177,7 +178,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
 }
 }
   calibrateDrivetrain();
-  Drivetrain.setDriveVelocity(50, percent);
+  Drivetrain.setDriveVelocity(20, percent);
   BrainInertial.calibrate();
 
 
