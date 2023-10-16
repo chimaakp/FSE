@@ -92,13 +92,16 @@ Drivetrain.turnToHeading(270, degrees);
 // drive until within 6 inches of wall
 Drivetrain.drive(forward);
 while(1){
-  if(Distance1.objectDistance(inches)<= 4){// this value should change based on dimension of robot; we want to be in center of square
+  if(Distance1.objectDistance(inches)<= 2){// this value should change based on dimension of robot; we want to be in center of square
     Drivetrain.stop();
     break;
   }
 }
+
 //turn right 90 degrees
 Drivetrain.turnToHeading(0, degrees);
+Drivetrain.driveFor(reverse, 6, inches);
+Drivetrain.setHeading(0, degrees);
 //drive forward 12 inches
 Drivetrain.driveFor(forward, 12, inches);
 //change state to Approach
