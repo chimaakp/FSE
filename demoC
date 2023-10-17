@@ -83,7 +83,7 @@ Drivetrain.driveFor(forward, 18, inches);
 //turn left towards wall
 Drivetrain.turnToHeading(270, degrees);
 // drive until within 6 inches of wall
-Drivetrain.driveFor(forward, 12, inches);
+Drivetrain.driveFor(forward, 15, inches);
 //lift arm
 Arm.setMaxTorque(100, percent);
 Arm.setTimeout(5, seconds);
