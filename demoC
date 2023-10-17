@@ -83,19 +83,12 @@ Drivetrain.driveFor(forward, 18, inches);
 //turn left towards wall
 Drivetrain.turnToHeading(270, degrees);
 // drive until within 6 inches of wall
-/*Drivetrain.drive(forward);
-while(1){
-  if(Distance1.objectDistance(inches)<= 6){// this value should change based on dimension of robot; we want to be in center of square
-    Drivetrain.stop();
-    break;
-  }
-}*/
-Drivetrain.driveFor(forward, 18, inches);
+Drivetrain.driveFor(forward, 12, inches);
 //lift arm
 Arm.setTimeout(2, seconds);
 Arm.spinFor(reverse, 45, degrees);
 //get closer to wall without worry of bumping
-Drivetrain.driveFor(forward, 5, inches);
+//Drivetrain.driveFor(forward, 3, inches);
 //turn right 90 degrees
 Drivetrain.turnToHeading(0, degrees);
 //lower arm
