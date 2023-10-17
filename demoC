@@ -85,17 +85,17 @@ Drivetrain.turnToHeading(270, degrees);
 // drive until within 6 inches of wall
 Drivetrain.driveFor(forward, 12, inches);
 //lift arm
-Arm.setTimeout(2, seconds);
-Arm.spinFor(reverse, 45, degrees);
+Arm.setTimeout(4, seconds);
+Arm.spinFor(forward, 180, degrees);
 //get closer to wall without worry of bumping
-//Drivetrain.driveFor(forward, 3, inches);
+//Drivetrain.driveFor(forward, 6, inches);
 //turn right 90 degrees
 Drivetrain.turnToHeading(0, degrees);
 //lower arm
-Arm.setTimeout(2, seconds);
-Arm.spinFor(forward, 45, degrees);
+Arm.setTimeout(5, seconds);
+Arm.spinFor(reverse, 180, degrees);
 //back up into wall to realign with grid
-Drivetrain.driveFor(reverse, 8, inches);
+Drivetrain.driveFor(reverse, 12, inches);
 Drivetrain.setHeading(0, degrees);
 //drive forward 12 inches
 Drivetrain.driveFor(forward, 12, inches);
