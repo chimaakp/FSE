@@ -73,34 +73,35 @@ using namespace vex;
 enum State {Start, Position , Approach ,Pickup, Stop};
 static double flatpitch;
 
+
 int approachFirstBall(){
 //drive forward until on flat ground
-//Drivetrain.drive(forward);
-//dont worry about any checks until no longer on flat ground
-Drivetrain.driveFor(forward, 12, inches);
-/*while((BrainInertial.orientation(pitch, degrees) + flatpitch) < 5){}
 
-while(1){
-  if((BrainInertial.orientation(pitch, degrees) - flatpitch) < 5 ){// if pitch less than 5 degrees away from flat 
-    Drivetrain.stop();
-    break;
-  }
-}*/
-Drivetrain.driveFor(forward, 3, inches);
-//make a left turn (90 degrees)
+//Drive over bump, and make sure fully within track
+Drivetrain.driveFor(forward, 18, inches);
+
+//turn left towards wall
 Drivetrain.turnToHeading(270, degrees);
 // drive until within 6 inches of wall
 Drivetrain.drive(forward);
 while(1){
-  if(Distance1.objectDistance(inches)<= 2){// this value should change based on dimension of robot; we want to be in center of square
+  if(Distance1.objectDistance(inches)<= 6){// this value should change based on dimension of robot; we want to be in center of square
     Drivetrain.stop();
     break;
   }
 }
-
+//lift arm
+Arm.setTimeout(2, seconds);
+Arm.spinFor(reverse, 45, degrees);
+//get closer to wall without worry of bumping
+Drivetrain.driveFor(forward, 5, inches);
 //turn right 90 degrees
 Drivetrain.turnToHeading(0, degrees);
-Drivetrain.driveFor(reverse, 6, inches);
+//lower arm
+Arm.setTimeout(2, seconds);
+Arm.spinFor(forward, 45, degrees);
+//back up into wall to realign with grid
+Drivetrain.driveFor(reverse, 8, inches);
 Drivetrain.setHeading(0, degrees);
 //drive forward 12 inches
 Drivetrain.driveFor(forward, 12, inches);
@@ -138,12 +139,12 @@ Drivetrain.stop();
 Drivetrain.setDriveVelocity(20, percent);
 
 //if object is blue, change state to pickup
-if(Optical5.color() == blue){
+if((Optical5.hue() <= 270) && (Optical5.hue() >= 200)){
 return Pickup;
 }
 //if object is red, change drive back 10 in: Change state to Position
 else{
-Drivetrain.driveFor(reverse, 6, inches);
+Drivetrain.driveFor(reverse, 12, inches);
 return Position;
 }
 
@@ -160,7 +161,7 @@ return Stop;
 int pickupBall(){//clockwise to close claw, and clockwise to lift arm
 
 Claw.setMaxTorque(50, percent);
-Claw.setTimeout(3, seconds);
+Claw.setTimeout(4, seconds);
 Claw.spinFor(reverse, 180, degrees);
 Arm.setMaxTorque(100, percent);
 Arm.setTimeout(4, seconds);
@@ -175,6 +176,9 @@ return Stop;
 int main() {
   while(1)
 {
+  Brain.Screen.print("BLUE HUE : %.2f", Optical5.hue());
+
+
 if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonRight.pressing()))
 {
   break;
