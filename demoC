@@ -85,7 +85,8 @@ Drivetrain.turnToHeading(270, degrees);
 // drive until within 6 inches of wall
 Drivetrain.driveFor(forward, 12, inches);
 //lift arm
-Arm.setTimeout(4, seconds);
+Arm.setMaxTorque(100, percent);
+Arm.setTimeout(5, seconds);
 Arm.spinFor(forward, 180, degrees);
 //get closer to wall without worry of bumping
 //Drivetrain.driveFor(forward, 6, inches);
@@ -160,7 +161,7 @@ Claw.setTimeout(4, seconds);
 Claw.spinFor(reverse, 180, degrees);
 Arm.setMaxTorque(100, percent);
 Arm.setTimeout(4, seconds);
-Arm.spinFor(reverse, 45, degrees);
+Arm.spinFor(forward, 180, degrees);
 return Stop;
 
 }
