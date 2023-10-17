@@ -34,7 +34,7 @@ smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, BrainInertia
 
 optical Optical5 = optical(PORT5);
 distance Distance1 = distance(PORT1);
-motor Claw = motor(PORT4, false);
+motor Claw = motor(PORT4, true);
 
 motor Arm = motor(PORT3, false);
 
