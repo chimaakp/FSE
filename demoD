@@ -190,7 +190,7 @@ Claw.spinFor(reverse, 180, degrees);
 Arm.setMaxTorque(100, percent);
 Arm.setTimeout(4, seconds);
 Arm.spinFor(forward, 180, degrees);
-return Stop;
+return Leave;
 
 }
 
@@ -245,7 +245,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
       case Enter:
       positionTrack = EnterMaze();
       break;
-      default:
+      default://STOP
       positionTrack = stopAllMovement();
       cont = 0; //STOP!!!
 
