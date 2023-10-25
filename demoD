@@ -1,0 +1,263 @@
+#pragma region VEXcode Generated Robot Configuration
+// Make sure all required headers are included.
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+#include <string.h>
+
+
+#include "vex.h"
+
+using namespace vex;
+
+// Brain should be defined by default
+brain Brain;
+
+
+// START EXP MACROS
+#define waitUntil(condition)                                                   \
+  do {                                                                         \
+    wait(5, msec);                                                             \
+  } while (!(condition))
+
+#define repeat(iterations)                                                     \
+  for (int iterator = 0; iterator < iterations; iterator++)
+// END EXP MACROS
+
+
+// Robot configuration code.
+inertial BrainInertial = inertial();
+motor LeftDriveSmart = motor(PORT6, false);
+motor RightDriveSmart = motor(PORT10, true);
+smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, BrainInertial, 259.34, 320, 40, mm, 1);
+
+optical Optical5 = optical(PORT5);
+distance Distance1 = distance(PORT1);
+motor Claw = motor(PORT4, true);
+
+motor Arm = motor(PORT3, false);
+
+
+void calibrateDrivetrain() {
+  wait(200, msec);
+  Brain.Screen.print("Calibrating");
+  Brain.Screen.newLine();
+  Brain.Screen.print("Inertial");
+  BrainInertial.calibrate();
+  while (BrainInertial.isCalibrating()) {
+    wait(25, msec);
+  }
+
+  // Clears the screen and returns the cursor to row 1, column 1.
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
+}
+
+#pragma endregion VEXcode Generated Robot Configuration
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*    Module:       main.cpp                                                  */
+/*    Author:       {author}                                                  */
+/*    Created:      {date}                                                    */
+/*    Description:  EXP project                                               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+// Include the VEX Library
+#include "vex.h"
+  
+// Allows for easier use of the VEX Library
+using namespace vex;
+
+enum State {Start, Position , Approach ,Pickup, Stop, Leave, Enter};
+static double flatpitch;
+
+int LeaveMaze(int *nextballNum){
+  int tmp = *nextballNum;
+  switch(tmp){
+    case 0:
+    Drivetrain.turnToHeading(90, degrees);
+    Drivetrain.driveFor(forward, 18, inches);
+    break;
+    case 1:
+    Drivetrain.turnToHeading(90, degrees);
+    Drivetrain.driveFor(forward, 6, inches);
+    break;
+    case 2:
+    Drivetrain.turnToHeading(270, degrees);
+    Drivetrain.driveFor(forward, 6, inches);
+    break;
+  default:
+    Drivetrain.turnToHeading(270, degrees);
+    Drivetrain.driveFor(forward, 18, inches);
+    break;
+  }
+  Drivetrain.turnToHeading(180, degrees);
+  return Enter;
+
+}
+
+
+int EnterMaze(){
+  //Drive over bump, and make sure fully within track
+  Drivetrain.driveFor(forward, 18, inches);
+
+  return Start;
+}
+
+int approachFirstBall(){
+//drive forward until on flat ground
+
+
+//turn left towards wall
+Drivetrain.turnToHeading(270, degrees);
+// drive until within 6 inches of wall
+Drivetrain.driveFor(forward, 15, inches);
+//lift arm
+Arm.setMaxTorque(100, percent);
+Arm.setTimeout(5, seconds);
+Arm.spinFor(forward, 180, degrees);
+//get closer to wall without worry of bumping
+//Drivetrain.driveFor(forward, 6, inches);
+//turn right 90 degrees
+Drivetrain.turnToHeading(0, degrees);
+//lower arm
+Arm.setTimeout(5, seconds);
+Arm.spinFor(reverse, 180, degrees);
+//back up into wall to realign with grid
+Drivetrain.driveFor(reverse, 15, inches);
+Drivetrain.setHeading(0, degrees);
+//drive forward 12 inches
+Drivetrain.driveFor(forward, 12, inches);
+//change state to Approach
+return Approach;
+}
+
+int positiontoNextBall(int *nextballNum){
+//if this is the 4th ball, change state to stop
+int tmp = *nextballNum;
+if(tmp >= 4){
+  return Leave;
+}
+//turn right 90 degree
+Drivetrain.turnToHeading(90, degrees);
+//move forward 12 inches
+Drivetrain.driveFor(forward, 12, inches);
+//turn left 90 degrees
+Drivetrain.turnToHeading(0, degrees);
+//change to Approach
+return Approach;
+}
+
+int checkColor(){
+//get color sensor ready
+//poll optical sensor throughout
+Drivetrain.setDriveVelocity(5, percent);
+Drivetrain.drive(forward);
+while(!Optical5.isNearObject()){//holding at this line until object sensed
+}
+//if object detected, stop
+Drivetrain.stop();
+Drivetrain.setDriveVelocity(20, percent);
+
+//if object is blue, change state to pickup
+int ballhue = (int) Optical5.hue();
+if((ballhue <= 300) && (ballhue >= 150)){
+return Pickup;
+}
+//if object is red, change drive back 10 in: Change state to Position
+else{
+Drivetrain.driveFor(reverse, 12, inches);
+return Position;
+}
+
+}
+
+int stopAllMovement(){
+//stop all motors
+Drivetrain.stop();
+return Stop;
+
+
+}
+
+int pickupBall(){//clockwise to close claw, and clockwise to lift arm
+
+Claw.setMaxTorque(50, percent);
+Claw.setTimeout(4, seconds);
+Claw.spinFor(reverse, 180, degrees);
+Arm.setMaxTorque(100, percent);
+Arm.setTimeout(4, seconds);
+Arm.spinFor(forward, 180, degrees);
+return Stop;
+
+}
+
+
+
+
+int main() {
+  while(1)
+{
+  Brain.Screen.print("BLUE HUE : %.2f", Optical5.hue());
+
+
+if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonRight.pressing()))
+{
+  break;
+}
+}
+  calibrateDrivetrain();
+  Drivetrain.setDriveVelocity(20, percent);
+  BrainInertial.calibrate();
+
+
+
+  Drivetrain.setHeading(0, degrees);
+
+  int positionTrack = Start;
+  int cont = 1;
+  flatpitch = BrainInertial.orientation(pitch, degrees);
+  int ballnum = 0;
+
+  while(cont){
+    switch (positionTrack){
+      case Start:
+      positionTrack = approachFirstBall();
+      break;
+      case Position:
+      ballnum++;
+      positionTrack = positiontoNextBall(&ballnum);
+
+      break;
+      case Approach:
+      positionTrack = checkColor();
+
+      break;
+      case Pickup:
+      positionTrack = pickupBall();
+
+      break;
+      case Leave:
+      positionTrack = LeaveMaze(&ballnum);
+      break;
+      case Enter:
+      positionTrack = EnterMaze();
+      break;
+      default:
+      positionTrack = stopAllMovement();
+      cont = 0; //STOP!!!
+
+      break;
+    }
+
+
+
+
+  }
+
+
+
+
+}
