@@ -34,9 +34,9 @@ smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, BrainInertia
 
 optical Optical5 = optical(PORT5);
 distance Distance1 = distance(PORT1);
-motor Claw = motor(PORT4, true);
+motor Claw = motor(PORT4, false);
 
-motor Arm = motor(PORT3, false);
+motor Arm = motor(PORT3, true);
 
 
 void calibrateDrivetrain() {
@@ -94,37 +94,59 @@ int LeaveMaze(int *nextballNum){
     break;
   }
   Drivetrain.turnToHeading(180, degrees);
+  Drivetrain.driveFor(forward, 40, inches);
   return Enter;
 
 }
 
 
 int EnterMaze(){
-  //Drive over bump, and make sure fully within track
-  Drivetrain.driveFor(forward, 18, inches);
+  
+  while(1){
+    Drivetrain.drive(forward);
+    if(Distance1.objectDistance(inches) < 10){//object in front
+        Drivetrain.stop();
+        Drivetrain.turnFor(right, 90, degrees);
+
+      if(Distance1.objectDistance(inches) <12){
+        Drivetrain.turnFor(left, 180, degrees);
+        Drivetrain.drive(forward); 
+
+      }
+      else{
+        Drivetrain.drive(forward); 
+      }
+
+    }
+    //Drive over bump, 
+    if((BrainInertial.gyroRate(zaxis, dps) > 1 ) || (BrainInertial.gyroRate(zaxis, dps) < -1) ){// hit a bump
+        Drivetrain.stop();
+        break;
+
+      
+    }
+
+  }
 
   return Start;
 }
 
 int approachFirstBall(){
 //drive forward until on flat ground
-
+Drivetrain.driveFor(forward, 10, inches);
 
 //turn left towards wall
-Drivetrain.turnToHeading(270, degrees);
+Drivetrain.turnFor(left, 90, degrees);
 // drive until within 6 inches of wall
-Drivetrain.driveFor(forward, 15, inches);
+Drivetrain.driveFor(forward, 20, inches);
 //lift arm
-Arm.setMaxTorque(100, percent);
-Arm.setTimeout(5, seconds);
-Arm.spinFor(forward, 180, degrees);
+
 //get closer to wall without worry of bumping
 //Drivetrain.driveFor(forward, 6, inches);
 //turn right 90 degrees
-Drivetrain.turnToHeading(0, degrees);
-//lower arm
-Arm.setTimeout(5, seconds);
-Arm.spinFor(reverse, 180, degrees);
+Drivetrain.turnFor(right, 90, degrees);
+
+
 //back up into wall to realign with grid
 Drivetrain.driveFor(reverse, 15, inches);
 Drivetrain.setHeading(0, degrees);
@@ -184,9 +206,15 @@ return Stop;
 
 int pickupBall(){//clockwise to close claw, and clockwise to lift arm
 
+Drivetrain.driveFor(reverse, 3, inches);
+//lower arm
+Arm.setTimeout(5, seconds);
+Arm.spinFor(reverse, 270, degrees);
+//close fist
 Claw.setMaxTorque(50, percent);
 Claw.setTimeout(4, seconds);
 Claw.spinFor(reverse, 180, degrees);
+//raise arm
 Arm.setMaxTorque(100, percent);
 Arm.setTimeout(4, seconds);
 Arm.spinFor(forward, 180, degrees);
@@ -198,6 +226,10 @@ return Leave;
 
 
 int main() {
+  //left arm before we start to navigate
+  Arm.setMaxTorque(100, percent);
+  Arm.setTimeout(5, seconds);
+  Arm.spinFor(forward, 270, degrees);
   while(1)
 {
   Brain.Screen.print("BLUE HUE : %.2f", Optical5.hue());
@@ -214,7 +246,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
 
 
 
-  Drivetrain.setHeading(0, degrees);
+ // Drivetrain.setHeading(0, degrees);
 
   int positionTrack = Start;
   int cont = 1;
