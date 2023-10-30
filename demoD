@@ -95,7 +95,41 @@ int LeaveMaze(int *nextballNum){
   }
   Drivetrain.turnToHeading(180, degrees);
   Drivetrain.driveFor(forward, 40, inches);
-  return Enter;
+
+  Optical5.setLight(ledState::on);
+  Optical5.setLightPower(100, percent);
+  while(1){
+    Drivetrain.drive(forward);
+    if(Distance1.objectDistance(inches) < 10){//object in front
+        Drivetrain.stop();
+        Drivetrain.turnFor(right, 90, degrees);
+
+      if(Distance1.objectDistance(inches) <12){
+        Drivetrain.turnFor(left, 180, degrees);
+        Drivetrain.drive(forward); 
+
+      }
+      else{
+        Drivetrain.drive(forward); 
+      }
+
+    }
+    //green detetected 
+    if(Optical5.color() == green){
+        Drivetrain.stop();
+        Claw.setMaxTorque(50, percent);
+        Claw.setTimeout(4, seconds);
+        Claw.spinFor(forward, 180, degrees);
+        
+
+        break;
+
+      
+    }
+
+  }
+
+  return Stop;
 
 }
 
@@ -188,7 +222,7 @@ int ballhue = (int) Optical5.hue();
 if((ballhue <= 300) && (ballhue >= 150)){
 return Pickup;
 }
-//if object is red, change drive back 10 in: Change state to Position
+//if object is red, change drive back 12 in: Change state to Position
 else{
 Drivetrain.driveFor(reverse, 12, inches);
 return Position;
@@ -226,7 +260,7 @@ return Leave;
 
 
 int main() {
-  //left arm before we start to navigate
+  //lift arm before we start to navigate
   Arm.setMaxTorque(100, percent);
   Arm.setTimeout(5, seconds);
   Arm.spinFor(forward, 270, degrees);
@@ -246,9 +280,10 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
 
 
 
+
  // Drivetrain.setHeading(0, degrees);
 
-  int positionTrack = Start;
+  int positionTrack = Enter;
   int cont = 1;
   flatpitch = BrainInertial.orientation(pitch, degrees);
   int ballnum = 0;
