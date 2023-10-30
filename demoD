@@ -138,12 +138,12 @@ int EnterMaze(){
   
   while(1){
     Drivetrain.drive(forward);
-    if(Distance1.objectDistance(inches) < 10){//object in front
+    if(Distance1.objectDistance(inches) < 8){//object in front
         Drivetrain.stop();
-        Drivetrain.turnFor(right, 90, degrees);
+        Drivetrain.turnFor(left, 90, degrees);
 
-      if(Distance1.objectDistance(inches) <12){
-        Drivetrain.turnFor(left, 180, degrees);
+      if(Distance1.objectDistance(inches) <8){
+        Drivetrain.turnFor(right, 180, degrees);
         Drivetrain.drive(forward); 
 
       }
@@ -263,7 +263,7 @@ int main() {
   //lift arm before we start to navigate
   Arm.setMaxTorque(100, percent);
   Arm.setTimeout(5, seconds);
-  Arm.spinFor(forward, 270, degrees);
+  Arm.spinFor(forward, 360, degrees);
   while(1)
 {
   Brain.Screen.print("BLUE HUE : %.2f", Optical5.hue());
