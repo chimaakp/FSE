@@ -153,7 +153,7 @@ int EnterMaze(){
 
     }
     //Drive over bump, 
-    if( BrainInertial.orientation(pitch, degrees) > 10){// hit a bump
+    if( BrainInertial.orientation(pitch, degrees) > 20){// hit a bump
         Drivetrain.stop();
         break;
 
