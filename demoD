@@ -135,7 +135,7 @@ int LeaveMaze(int *nextballNum){
 
 
 int EnterMaze(){
-  
+  Optical5.setLight(ledState::on);
   while(1){
     Drivetrain.drive(forward);
     if(Distance1.objectDistance(inches) < 8){//object in front
@@ -166,6 +166,7 @@ int EnterMaze(){
 }
 
 int approachFirstBall(){
+Optical5.setLight(ledState::off);
 //drive forward until on flat ground
 Drivetrain.driveFor(forward, 10, inches);
 
