@@ -70,7 +70,7 @@ void calibrateDrivetrain() {
 // Allows for easier use of the VEX Library
 using namespace vex;
 
-enum State {Start, Position , Approach ,Pickup, Stop, Leave, Enter};
+enum State {Enter,Start, Position , Approach ,Pickup, Leave, Stop};
 static double flatpitch;
 
 int LeaveMaze(int *nextballNum){
@@ -296,6 +296,9 @@ Arm.setMaxTorque(100, percent);
 
   while(cont){
     switch (positionTrack){
+      case Enter:
+      positionTrack = EnterMaze();
+      break;
       case Start:
       positionTrack = approachFirstBall();
       break;
@@ -314,9 +317,6 @@ Arm.setMaxTorque(100, percent);
       break;
       case Leave:
       positionTrack = LeaveMaze(&ballnum);
-      break;
-      case Enter:
-      positionTrack = EnterMaze();
       break;
       default://STOP
       positionTrack = stopAllMovement();
