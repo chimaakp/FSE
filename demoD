@@ -270,7 +270,7 @@ int main() {
   Arm.spinFor(forward, 360, degrees);
   while(1)
 {
-  Brain.Screen.print("BLUE HUE : %.2f", Optical5.hue());
+ // Brain.Screen.print("BLUE HUE : %.2f", Optical5.hue());
 
 
 if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonRight.pressing()))
@@ -297,25 +297,31 @@ Arm.setMaxTorque(100, percent);
   while(cont){
     switch (positionTrack){
       case Enter:
+      Brain.Screen.print("Navigating Maze");
       positionTrack = EnterMaze();
       break;
       case Start:
+      Brain.Screen.print("Checking first ball");
       positionTrack = approachFirstBall();
       break;
       case Position:
+      Brain.Screen.print("Moving to next ball");
       ballnum++;
       positionTrack = positiontoNextBall(&ballnum);
 
       break;
       case Approach:
+      Brain.Screen.print("Checking color");
       positionTrack = checkColor();
 
       break;
       case Pickup:
+      Brain.Screen.print("grabbing ball");
       positionTrack = pickupBall();
 
       break;
       case Leave:
+      Brain.Screen.print("leaving Maze");
       positionTrack = LeaveMaze(&ballnum);
       break;
       default://STOP
