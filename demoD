@@ -162,7 +162,7 @@ int EnterMaze(){
 
   }*/
 Drivetrain.driveFor(forward, 33, inches);
-Drivetrain.turnFor(left, 90, degrees);
+Drivetrain.turnFor(right, 90, degrees);
 Drivetrain.driveFor(forward, 40, inches);
 
   return Start;
@@ -282,7 +282,9 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
   Drivetrain.setDriveVelocity(40, percent);
   BrainInertial.calibrate();
 
-
+Arm.setMaxTorque(100, percent);
+  Arm.setTimeout(5, seconds);
+  Arm.spinFor(forward, 360, degrees);
 
 
  // Drivetrain.setHeading(0, degrees);
