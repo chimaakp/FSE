@@ -96,7 +96,7 @@ int LeaveMaze(int *nextballNum){
   Drivetrain.turnToHeading(180, degrees);
   Drivetrain.driveFor(forward, 40, inches);
 
-  Optical5.setLight(ledState::on);
+  Optical5.setLight(ledState::off);
   Optical5.setLightPower(100, percent);
   while(1){
     Drivetrain.drive(forward);
@@ -135,8 +135,8 @@ int LeaveMaze(int *nextballNum){
 
 
 int EnterMaze(){
-  Optical5.setLight(ledState::on);
-  while(1){
+  Optical5.setLight(ledState::off);
+  /*while(1){
     Drivetrain.drive(forward);
     if(Distance1.objectDistance(inches) < 8){//object in front
         Drivetrain.stop();
@@ -160,13 +160,16 @@ int EnterMaze(){
       
     }
 
-  }
+  }*/
+Drivetrain.driveFor(forward, 33, inches);
+Drivetrain.turnFor(left, 90, degrees);
+Drivetrain.driveFor(forward, 40, inches);
 
   return Start;
 }
 
 int approachFirstBall(){
-Optical5.setLight(ledState::off);
+Optical5.setLight(ledState::on);
 //drive forward until on flat ground
 Drivetrain.driveFor(forward, 10, inches);
 
@@ -276,7 +279,7 @@ if((Brain.buttonLeft.pressing())||(Brain.buttonCheck.pressing())||(Brain.buttonR
 }
 }
   calibrateDrivetrain();
-  Drivetrain.setDriveVelocity(20, percent);
+  Drivetrain.setDriveVelocity(40, percent);
   BrainInertial.calibrate();
 
 
